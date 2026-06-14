@@ -36,10 +36,15 @@ import com.example.myholodos.api.RetrofitClient
 import com.example.myholodos.api.ChatRequest
 import com.example.myholodos.api.Message
 import com.example.myholodos.api.CompletionOptions
+import repository.RecipeRepository
+import database.RecipeEntity
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen(navController: NavHostController) {
+fun ChatScreen(
+    navController: NavHostController,
+    repository: RecipeRepository
+) {
 
     var userText by rememberSaveable {
         mutableStateOf("")
@@ -347,7 +352,22 @@ fun ChatScreen(navController: NavHostController) {
                                     time = recipe.time,
                                     calories = recipe.calories,
                                     ingredients = recipe.ingredients,
-                                    steps = recipe.steps
+                                    steps = recipe.steps,
+                                    onSaveClick = {
+
+                                        scope.launch {
+
+                                            repository.saveRecipe(
+                                                RecipeEntity(
+                                                    title = recipe.title,
+                                                    time = recipe.time,
+                                                    calories = recipe.calories,
+                                                    ingredients = recipe.ingredients,
+                                                    steps = recipe.steps
+                                                )
+                                            )
+                                        }
+                                    }
                                 )
 
                             } else {
@@ -414,8 +434,16 @@ fun ChatScreen(navController: NavHostController) {
                         sendMessage()
                     },
 
+                    colors = AssistChipDefaults.assistChipColors(
+                        containerColor = Color(0xFF7C3AED),
+                        labelColor = Color.White
+                    ),
+
                     label = {
-                        Text(suggestion)
+                        Text(
+                            text = suggestion,
+                            color = Color.White
+                        )
                     }
                 )
             }

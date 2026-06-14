@@ -15,4 +15,10 @@ class RecipeRepository(
 
     suspend fun getRecipes() =
         dao.getAllRecipes()
+
+    suspend fun deleteRecipe(
+        recipe: RecipeEntity
+    ) {
+        dao.delete(recipe)
+    }
 }
